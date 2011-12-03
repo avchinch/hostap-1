@@ -592,6 +592,7 @@ static void wpa_driver_nl80211_event_rtm_newlink(void *ctx,
 	int attrlen, rta_len;
 	struct rtattr *attr;
 	u32 brid = 0;
+	char namebuf[IFNAMSIZ];
 
 	drv = nl80211_find_drv(global, ifi->ifi_index, buf, len);
 	if (!drv) {
@@ -609,7 +610,6 @@ static void wpa_driver_nl80211_event_rtm_newlink(void *ctx,
 		   (ifi->ifi_flags & IFF_DORMANT) ? "[DORMANT]" : "");
 
 	if (!drv->if_disabled && !(ifi->ifi_flags & IFF_UP)) {
-		char namebuf[IFNAMSIZ];
 		if (if_indextoname(ifi->ifi_index, namebuf) &&
 		    linux_iface_up(drv->global->ioctl_sock,
 				   drv->first_bss.ifname) > 0) {
@@ -630,9 +630,18 @@ static void wpa_driver_nl80211_event_rtm_newlink(void *ctx,
 	}
 
 	if (drv->if_disabled && (ifi->ifi_flags & IFF_UP)) {
-		wpa_printf(MSG_DEBUG, "nl80211: Interface up");
-		drv->if_disabled = 0;
-		wpa_supplicant_event(drv->ctx, EVENT_INTERFACE_ENABLED, NULL);
+		if (if_indextoname(ifi->ifi_index, namebuf) &&
+		    linux_iface_up(drv->global->ioctl_sock,
+				   drv->first_bss.ifname) == 0) {
+			wpa_printf(MSG_DEBUG, "nl80211: Ignore interface up "
+				   "event since interface %s is down",
+				   namebuf);
+		} else {
+			wpa_printf(MSG_DEBUG, "nl80211: Interface up");
+			drv->if_disabled = 0;
+			wpa_supplicant_event(drv->ctx, EVENT_INTERFACE_ENABLED,
+					     NULL);
+		}
 	}
 
 	/*
@@ -663,7 +672,6 @@ static void wpa_driver_nl80211_event_rtm_newlink(void *ctx,
 
 	if (ifi->ifi_family == AF_BRIDGE && brid) {
 		/* device has been added to bridge */
-		char namebuf[IFNAMSIZ];
 		if_indextoname(brid, namebuf);
 		wpa_printf(MSG_DEBUG, "nl80211: Add ifindex %u for bridge %s",
 			   brid, namebuf);

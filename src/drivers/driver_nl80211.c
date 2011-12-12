@@ -2425,7 +2425,7 @@ static int nl80211_register_action_frames(struct wpa_driver_nl80211_data *drv)
 #ifdef CONFIG_TDLS
 	if ((drv->capa.flags & WPA_DRIVER_FLAGS_TDLS_SUPPORT)) {
 		/* TDLS Discovery Response */
-		if (nl80211_register_action_frame(drv, (u8 *) "\x04\x0e", 2) <
+		if (nl80211_register_action_frame(bss, (u8 *) "\x04\x0e", 2) <
 		    0)
 			return -1;
 	}

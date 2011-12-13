@@ -2006,7 +2006,12 @@ broken_combination:
 				connect_supported = 1;
 				break;
 			case NL80211_CMD_START_SCHED_SCAN:
+				/*
+				 * Disabled for 1.x for now as it is
+				 * broken there due to the way it ends
+				 * up getting used.
 				capa->sched_scan_supported = 1;
+				 */
 				break;
 			}
 		}

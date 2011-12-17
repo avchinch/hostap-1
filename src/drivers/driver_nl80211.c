@@ -1493,6 +1493,7 @@ static int nl80211_get_noise_for_scan_results(
 	return send_and_recv_msgs(drv, msg, get_noise_for_scan_results,
 				  scan_res);
  nla_put_failure:
+	nlmsg_free(msg);
 	return -ENOBUFS;
 }
 
@@ -6021,6 +6022,7 @@ static int i802_get_seqnum(const char *iface, void *priv, const u8 *addr,
 
 	return send_and_recv_msgs(drv, msg, get_key_handler, seq);
  nla_put_failure:
+	nlmsg_free(msg);
 	return -ENOBUFS;
 }
 
@@ -6140,6 +6142,7 @@ static int i802_flush(void *priv)
 
 	return send_and_recv_msgs(drv, msg, NULL, NULL);
  nla_put_failure:
+	nlmsg_free(msg);
 	return -ENOBUFS;
 }
 
@@ -6214,6 +6217,7 @@ static int i802_read_sta_data(void *priv, struct hostap_sta_driver_data *data,
 
 	return send_and_recv_msgs(drv, msg, get_sta_handler, data);
  nla_put_failure:
+	nlmsg_free(msg);
 	return -ENOBUFS;
 }
 
@@ -6270,7 +6274,9 @@ static int i802_set_tx_queue_params(void *priv, int queue, int aifs,
 
 	if (send_and_recv_msgs(drv, msg, NULL, NULL) == 0)
 		return 0;
+	msg = NULL;
  nla_put_failure:
+	nlmsg_free(msg);
 	return -1;
 }
 
@@ -6296,6 +6302,7 @@ static int i802_set_sta_vlan(void *priv, const u8 *addr,
 		    if_nametoindex(ifname));
 
 	ret = send_and_recv_msgs(drv, msg, NULL, NULL);
+	msg = NULL;
 	if (ret < 0) {
 		wpa_printf(MSG_ERROR, "nl80211: NL80211_ATTR_STA_VLAN (addr="
 			   MACSTR " ifname=%s vlan_id=%d) failed: %d (%s)",
@@ -6303,6 +6310,7 @@ static int i802_set_sta_vlan(void *priv, const u8 *addr,
 			   strerror(-ret));
 	}
  nla_put_failure:
+	nlmsg_free(msg);
 	return ret;
 }
 
@@ -7403,6 +7411,7 @@ static int nl80211_pmkid(struct i802_bss *bss, int cmd, const u8 *bssid,
 
 	return send_and_recv_msgs(bss->drv, msg, NULL, NULL);
  nla_put_failure:
+	nlmsg_free(msg);
 	return -ENOBUFS;
 }
 

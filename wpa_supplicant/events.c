@@ -1988,6 +1988,11 @@ void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
 					       data->disassoc_info.addr);
 			break;
 		}
+		if (wpa_s->ap_iface) {
+			wpa_dbg(wpa_s, MSG_DEBUG, "Ignore disassoc event in "
+				"AP mode");
+			break;
+		}
 #endif /* CONFIG_AP */
 		if (data) {
 			reason_code = data->disassoc_info.reason_code;
@@ -2035,6 +2040,11 @@ void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
 		if (wpa_s->ap_iface && data && data->deauth_info.addr) {
 			hostapd_notif_disassoc(wpa_s->ap_iface->bss[0],
 					       data->deauth_info.addr);
+			break;
+		}
+		if (wpa_s->ap_iface) {
+			wpa_dbg(wpa_s, MSG_DEBUG, "Ignore deauth event in "
+				"AP mode");
 			break;
 		}
 #endif /* CONFIG_AP */

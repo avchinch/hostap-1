@@ -868,7 +868,7 @@ void wpas_dbus_signal_p2p_provision_discovery(struct wpa_supplicant *wpa_s,
 		return;
 
 	/* Check if this is a known peer */
-	if (p2p_get_peer_info(wpa_s->global->p2p, dev_addr, 0, NULL, 0) < 0)
+	if (!p2p_peer_known(wpa_s->global->p2p, dev_addr))
 		goto error;
 
 	os_snprintf(peer_obj_path, WPAS_DBUS_OBJECT_PATH_MAX,
@@ -1358,7 +1358,7 @@ void wpas_dbus_signal_p2p_sd_request(struct wpa_supplicant *wpa_s,
 		return;
 
 	/* Check if this is a known peer */
-	if (p2p_get_peer_info(wpa_s->global->p2p, sa, 0, NULL, 0) < 0)
+	if (!p2p_peer_known(wpa_s->global->p2p, sa))
 		goto error;
 
 	os_snprintf(peer_obj_path, WPAS_DBUS_OBJECT_PATH_MAX,
@@ -1427,7 +1427,7 @@ void wpas_dbus_signal_p2p_sd_response(struct wpa_supplicant *wpa_s,
 		return;
 
 	/* Check if this is a known peer */
-	if (p2p_get_peer_info(wpa_s->global->p2p, sa, 0, NULL, 0) < 0)
+	if (!p2p_peer_known(wpa_s->global->p2p, sa))
 		goto error;
 
 	os_snprintf(peer_obj_path, WPAS_DBUS_OBJECT_PATH_MAX,

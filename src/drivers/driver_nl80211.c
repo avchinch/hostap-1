@@ -4286,7 +4286,8 @@ static int wpa_driver_nl80211_send_mlme(void *priv, const u8 *data,
 
 	if (drv->no_monitor_iface_capab && is_ap_interface(drv->nlmode)) {
 		return nl80211_send_frame_cmd(drv, drv->ap_oper_freq, 0,
-					      data, data_len, NULL, 0);
+					      data, data_len,
+					      &drv->send_action_cookie, 0);
 	}
 
 	if (WLAN_FC_GET_TYPE(fc) == WLAN_FC_TYPE_MGMT &&

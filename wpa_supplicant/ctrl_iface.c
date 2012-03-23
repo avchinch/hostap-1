@@ -1584,6 +1584,9 @@ static int wpa_supplicant_ctrl_iface_remove_network(
 		}
 		eapol_sm_invalidate_cached_session(wpa_s->eapol);
 		if (wpa_s->current_ssid) {
+#ifdef CONFIG_SME
+			wpa_s->sme.prev_bssid_set = 0;
+#endif /* CONFIG_SME */
 			wpa_sm_set_config(wpa_s->wpa, NULL);
 			eapol_sm_notify_config(wpa_s->eapol, NULL, NULL);
 			wpa_supplicant_disassociate(wpa_s,
@@ -1606,6 +1609,9 @@ static int wpa_supplicant_ctrl_iface_remove_network(
 	}
 
 	if (ssid == wpa_s->current_ssid || wpa_s->current_ssid == NULL) {
+#ifdef CONFIG_SME
+		wpa_s->sme.prev_bssid_set = 0;
+#endif /* CONFIG_SME */
 		/*
 		 * Invalidate the EAP session cache if the current or
 		 * previously used network is removed.
@@ -3579,6 +3585,9 @@ char * wpa_supplicant_ctrl_iface_process(struct wpa_supplicant *wpa_s,
 		reply_len = wpa_supplicant_ctrl_iface_list_networks(
 			wpa_s, reply, reply_size);
 	} else if (os_strcmp(buf, "DISCONNECT") == 0) {
+#ifdef CONFIG_SME
+		wpa_s->sme.prev_bssid_set = 0;
+#endif /* CONFIG_SME */
 		wpa_s->reassociate = 0;
 		wpa_s->disconnected = 1;
 		wpa_supplicant_deauthenticate(wpa_s,

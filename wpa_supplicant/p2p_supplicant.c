@@ -2433,7 +2433,6 @@ void wpas_p2p_deinit(struct wpa_supplicant *wpa_s)
 void wpas_p2p_deinit_global(struct wpa_global *global)
 {
 	struct wpa_supplicant *wpa_s, *tmp;
-	char *ifname;
 
 	if (global->p2p == NULL)
 		return;
@@ -2454,12 +2453,9 @@ void wpas_p2p_deinit_global(struct wpa_global *global)
 		}
 		if (tmp == NULL)
 			break;
-		ifname = os_strdup(tmp->ifname);
 		type = wpas_p2p_if_type(tmp->p2p_group_interface);
-		wpa_supplicant_remove_iface(global, tmp);
-		if (ifname)
-			wpa_drv_if_remove(wpa_s, type, ifname);
-		os_free(ifname);
+		/* Disconnect from the P2P group and deinit the interface */
+		wpas_p2p_disconnect(tmp);
 	}
 
 	/*

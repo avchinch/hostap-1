@@ -2154,7 +2154,6 @@ static int wpas_p2p_setup_channels(struct wpa_supplicant *wpa_s,
 	int cla, op;
 	struct p2p_oper_class_map op_class[] = {
 		{ HOSTAPD_MODE_IEEE80211G, 81, 1, 13, 1, BW20 },
-		{ HOSTAPD_MODE_IEEE80211G, 82, 14, 14, 1, BW20 },
 #if 0 /* Do not enable HT40 on 2 GHz for now */
 		{ HOSTAPD_MODE_IEEE80211G, 83, 1, 9, 1, BW40PLUS },
 		{ HOSTAPD_MODE_IEEE80211G, 84, 5, 13, 1, BW40MINUS },
